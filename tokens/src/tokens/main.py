@@ -9,9 +9,6 @@ import yaml
 import time
 from pathlib import Path
 from tokens.crew import TokensCrew
-# from crewai.outputs import CrewOutput  # ❌ This import is incorrect and causes the error
-
-# ... (your OTel instrumentation can remain here) ...
 
 def load_models_config():
     """Load models from config/models.yaml relative to project root"""
@@ -70,7 +67,7 @@ def main():
         return
     
     # Test prompt - adjust this as needed
-    test_prompt = "Explain quantum computing in 2-3 sentences."
+    test_prompt = "Write compelling, structured lyrics about quantum physics, formula one, and indian food. Delineate song sections like this: <verse1>, <chorus> etc with lyrics in between."
     
     print_header(f"Testing {len(models)} models with prompt:")
     print(f"\nPrompt: \"{test_prompt}\"\n")
