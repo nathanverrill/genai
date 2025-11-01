@@ -1,0 +1,100 @@
+models:
+  - name: anthropic-claude-v3-5-haiku
+    model: anthropic-claude-v3-5-haiku
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: anthropic-claude-v4-1-opus
+    model: anthropic-claude-v4-1-opus
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: anthropic-claude-v4-opus
+    model: anthropic-claude-v4-opus
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-4-5-sonnet
+    model: bedrock-claude-4-5-sonnet
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-4-sonnet
+    model: bedrock-claude-4-sonnet
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-v3-5-sonnet
+    model: bedrock-claude-v3-5-sonnet
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-v3-7-sonnet
+    model: bedrock-claude-v3-7-sonnet
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-v3-haiku
+    model: bedrock-claude-v3-haiku
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-claude-v3-sonnet
+    model: bedrock-claude-v3-sonnet
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-nova-lite-v1
+    model: bedrock-nova-lite-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: bedrock-nova-pro-v1
+    model: bedrock-nova-pro-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: deepseek-r1-v1
+    model: deepseek-r1-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama-v4-maverick-17b-instruct
+    model: meta-llama-v4-maverick-17b-instruct
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama-v4-scout-17b-instruct
+    model: meta-llama-v4-scout-17b-instruct
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3-70b-instruct
+    model: meta-llama3-70b-instruct
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3.2-11b-vision-v1
+    model: meta-llama3.2-11b-vision-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3.2-1b-instruct-v1
+    model: meta-llama3.2-1b-instruct-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3.2-3b-instruct-v1
+    model: meta-llama3.2-3b-instruct-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3.2-90b-vision-v1
+    model: meta-llama3.2-90b-vision-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}
+
+  - name: meta-llama3.3-70b-instruct-v1
+    model: meta-llama3.3-70b-instruct-v1
+    base_url: ${OPENAI_API_BASE}
+    api_key: ${OPENAI_API_KEY}

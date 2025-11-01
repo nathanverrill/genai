@@ -1,0 +1,18 @@
+# uv pip install -r requirements.txt 
+# Core CrewAI dependencies
+crewai>=0.86.0
+crewai-tools>=0.17.0
+
+# LangChain dependencies for OpenAI-compatible models
+langchain-openai>=0.2.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+
+# YAML parsing
+PyYAML>=6.0
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# Let uv resolve all transitive dependencies
+# (openai, httpx, pydantic, tiktoken, etc. will be installed automatically)

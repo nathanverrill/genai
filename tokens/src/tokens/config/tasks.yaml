@@ -1,0 +1,6 @@
+generate_response_task:
+  description: >
+    Using your assigned model, generate a response to the user prompt: "{prompt}"
+
+  expected_output: >
+    Return only the model's full reply to the prompt.
