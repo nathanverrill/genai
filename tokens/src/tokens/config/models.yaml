@@ -9,11 +9,6 @@ models:
     base_url: ${OPENAI_API_BASE}
     api_key: ${OPENAI_API_KEY}
 
-  - name: anthropic-claude-v4-opus
-    model: anthropic-claude-v4-opus
-    base_url: ${OPENAI_API_BASE}
-    api_key: ${OPENAI_API_KEY}
-
   - name: bedrock-claude-4-5-sonnet
     model: bedrock-claude-4-5-sonnet
     base_url: ${OPENAI_API_BASE}

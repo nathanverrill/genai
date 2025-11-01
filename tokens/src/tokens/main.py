@@ -9,7 +9,9 @@ import yaml
 import time
 from pathlib import Path
 from tokens.crew import TokensCrew
+# from crewai.outputs import CrewOutput  # ❌ This import is incorrect and causes the error
 
+# ... (your OTel instrumentation can remain here) ...
 
 def load_models_config():
     """Load models from config/models.yaml relative to project root"""
@@ -33,7 +35,7 @@ def load_models_config():
 
 def get_env_value(value: str) -> str:
     """Replace environment variable placeholders with actual values"""
-    if value.startswith('${') and value.endswith('}'):
+    if str(value).startswith('${') and str(value).endswith('}'):
         env_var = value[2:-1]
         env_value = os.getenv(env_var)
         
@@ -70,7 +72,7 @@ def main():
     # Test prompt - adjust this as needed
     test_prompt = "Explain quantum computing in 2-3 sentences."
     
-    print_header(f"Testing {len(models)} models with prompt: {test_prompt}")
+    print_header(f"Testing {len(models)} models with prompt:")
     print(f"\nPrompt: \"{test_prompt}\"\n")
     
     results = []
@@ -85,13 +87,13 @@ def main():
         print(f"Model ID: {model_id}")
         print(f"{'='*80}\n")
         
+        # Start timing
+        start_time = time.time()
+            
         try:
             # Get environment values
             base_url = get_env_value(model_config['base_url'])
             api_key = get_env_value(model_config['api_key'])
-            
-            # Start timing
-            start_time = time.time()
             
             # Initialize crew with specific model
             crew = TokensCrew(
@@ -101,26 +103,48 @@ def main():
                 api_key=api_key
             )
             
-            # Run the crew
-            result = crew.crew().kickoff(inputs={'prompt': test_prompt})
+            # Run the crew and get the CrewOutput object
+            # ❌ Removed the ': CrewOutput' type hint to fix the ModuleNotFoundError
+            crew_output = crew.crew().kickoff(inputs={'prompt': test_prompt})
             
             # Calculate elapsed time
             elapsed_time = time.time() - start_time
             
-            # Store results
-            results.append({
+            # Extract data directly from the CrewOutput object
+            response_text = crew_output.raw
+            
+            # ✅ FIX: Access attributes directly from the UsageMetrics object
+            token_stats = crew_output.token_usage  # This is a UsageMetrics object
+            
+            token_in = 0
+            token_out = 0
+            total_tokens = 0
+
+            if token_stats:
+                token_in = token_stats.prompt_tokens
+                token_out = token_stats.completion_tokens
+                total_tokens = token_stats.total_tokens
+            
+            # Build the report
+            report = {
                 'model': model_name,
                 'model_id': model_id,
-                'time': elapsed_time,
-                'response': str(result),
+                'execution_time_sec': elapsed_time,
+                'response': response_text,
                 'success': True,
-                'error': None
-            })
+                'error': None,
+                'token_in': token_in,
+                'token_out': token_out,
+                'total_tokens': total_tokens
+            }
+            results.append(report)
             
+            # Print a clean, parsed summary
             print(f"\n{'─'*80}")
-            print(f"✓ Completed in {elapsed_time:.2f}s")
+            print(f"✓ Completed in {report['execution_time_sec']:.2f}s")
+            print(f"  Tokens: In: {report['token_in']} | Out: {report['token_out']} | Total: {report['total_tokens']}")
             print(f"{'─'*80}")
-            print(f"Response:\n{result}")
+            print(f"Response:\n{report['response']}")
             print(f"{'─'*80}\n")
             
         except Exception as e:
@@ -129,10 +153,13 @@ def main():
             results.append({
                 'model': model_name,
                 'model_id': model_id,
-                'time': elapsed_time,
+                'execution_time_sec': elapsed_time,
                 'response': None,
                 'success': False,
-                'error': str(e)
+                'error': str(e),
+                'token_in': 'N/A', # Add keys for consistent table
+                'token_out': 'N/A',
+                'total_tokens': 'N/A'
             })
             
             print(f"\n{'─'*80}")
@@ -145,32 +172,37 @@ def main():
     print_header("PERFORMANCE SUMMARY")
     
     # Sort by time (successful models first, then by time)
-    results.sort(key=lambda x: (not x['success'], x['time']))
+    results.sort(key=lambda x: (not x['success'], x['execution_time_sec']))
     
-    # Print table header
-    print(f"\n{'Model':<45} {'Status':<12} {'Time (s)':<10}")
-    print(f"{'-'*70}")
+    # Print enhanced table header
+    print(f"\n{'Model':<35} {'Status':<10} {'Time (s)':<10} {'In':<8} {'Out':<8} {'Total':<8}")
+    print(f"{'-'*80}")
     
-    # Print results
+    # Print results with token stats
     for result in results:
         status = "✓ Success" if result['success'] else "✗ Failed"
-        print(f"{result['model']:<45} {status:<12} {result['time']:>8.2f}")
+        time_val = result.get('execution_time_sec', 0.0)
+        token_in = result.get('token_in', 'N/A')
+        token_out = result.get('token_out', 'N/A')
+        total_tok = result.get('total_tokens', 'N/A')
+
+        print(f"{result['model']:<35} {status:<10} {time_val:>8.2f} {token_in:>8} {token_out:>8} {total_tok:>8}")
     
     # Calculate statistics
     successful = [r for r in results if r['success']]
     failed = [r for r in results if not r['success']]
     
-    print(f"\n{'-'*70}")
+    print(f"\n{'-'*80}")
     print(f"Total Models: {len(results)} | Successful: {len(successful)} | Failed: {len(failed)}")
     
     # Print fastest successful model
     if successful:
         fastest = successful[0]
         slowest = successful[-1]
-        avg_time = sum(r['time'] for r in successful) / len(successful)
+        avg_time = sum(r['execution_time_sec'] for r in successful) / len(successful)
         
-        print(f"\n🏆 Fastest Model: {fastest['model']} ({fastest['time']:.2f}s)")
-        print(f"🐌 Slowest Model: {slowest['model']} ({slowest['time']:.2f}s)")
+        print(f"\n🏆 Fastest Model: {fastest['model']} ({fastest['execution_time_sec']:.2f}s)")
+        print(f"🐌 Slowest Model: {slowest['model']} ({slowest['execution_time_sec']:.2f}s)")
         print(f"📊 Average Time: {avg_time:.2f}s")
     
     # Print failed models with errors
@@ -205,3 +237,4 @@ def run_safe():
 
 if __name__ == '__main__':
     run_safe()
+
